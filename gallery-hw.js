@@ -42,16 +42,53 @@ function onOpenModal(event) {
   bigPhoto.alt = event.target.alt;
 }
 
-
-
 const closeModalBtn = document.querySelector('[data-action="close-lightbox"]')
+const backdrop = document.querySelector('.lightbox__overlay')
 closeModalBtn.addEventListener("click", onCloseModal);
+backdrop.addEventListener('click', onBackdropClick);
 
 function onCloseModal() {
   lightBox.classList.remove("is-open");
   bigPhoto.removeAttribute('src');
   bigPhoto.removeAttribute("alt");
+  document.addEventListener("keydown", onEscKeyPress);
 }
 
+function onEscKeyPress(event) {
+  const ESC_KEY_CODE = 'Escape';
+  const isEscKey = event.code === ESC_KEY_CODE;
 
+  if (isEscKey) {
+    onCloseModal();
+  }
+}
 
+function onBackdropClick(event) {
+  if (event.currentTarget === event.target) {
+    onCloseModal();
+  }
+}
+
+document.addEventListener("keydown", onLeftKeyPress);
+document.addEventListener("keydown",  onRightKeyPress);
+function onLeftKeyPress(event) {
+  if (event.code === 'ArrowLeft') {
+    const i = gallery.findIndex(image => image.original === bigPhoto.src) - 1;
+    if (i === -1) {
+      return;
+    }
+    bigPhoto.src = gallery[i].original;
+    bigPhoto.alt = gallery[i].description;
+  }
+}
+function onRightKeyPress(event) {
+  if (event.code === 'ArrowRight') {
+    const i =
+      gallery.findIndex(image => image.original === bigPhoto.src) + 1;
+    if (i === gallery.length - 1) {
+      return;
+    }
+    bigPhoto.src = gallery[i].original;
+    bigPhoto.alt = gallery[i].description;
+  }
+}
